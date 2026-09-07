@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Catastral</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: linear-gradient(90deg, #1a2a3a 0%, #2c3e50 100%);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            border-bottom: 3px solid #f39c12;
+        }
+        .header img {
+            height: 40px;
+            margin-right: 15px;
+        }
+        .header h1 {
+            font-size: 18px;
+            margin: 0;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .header .subtitle {
+            font-size: 12px;
+            color: #bdc3c7;
+            letter-spacing: 0.5px;
+        }
+        
+        #map {
+            height: 100vh;
+            width: 100%;
+            padding-top: 60px;
+            box-sizing: border-box;
+        }
+        
+        .leaflet-control-layers {
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .leaflet-control-layers-expanded {
+            background: white;
+            padding: 15px;
+            font-size: 13px;
+        }
+        .leaflet-control-layers-separator {
+            border-top: 1px solid #ecf0f1;
+            margin: 10px 0;
+        }
+        .leaflet-control-layers-base label, .leaflet-control-layers-overlays label {
+            padding: 4px 0;
+            display: block;
+            cursor: pointer;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        .leaflet-control-layers-base label:hover, .leaflet-control-layers-overlays label:hover {
+            color: #f39c12;
+            transition: 0.2s;
+        }
+
+        .leaflet-popup-content-wrapper {
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            padding: 0;
+            background: white;
+        }
+        .leaflet-popup-content {
+            margin: 0;
+            width: 300px !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .popup-header {
+            background: linear-gradient(90deg, #1a2a3a 0%, #2c3e50 100%);
+            color: white;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border-bottom: 3px solid #f39c12;
+        }
+        
+        .tabla-datos {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            background: white;
+            padding: 10px;
+        }
+        .tabla-datos td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #ecf0f1;
+            vertical-align: top;
+        }
+        .tabla-datos td:first-child {
+            font-weight: bold;
+            color: #2c3e50;
+            width: 45%;
+            background: #f8f9fa;
+            text-transform: capitalize;
+        }
+        .tabla-datos td:last-child {
+            color: #555;
+            font-weight: 500;
+        }
+        .tabla-datos tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div style="display: flex; align-items: center;">
+            <img src="wp-content/logo.png" alt="Logo Empresa">
+            <div>
+                <h1>GEOSPATIAL INDUSTRY</h1>
+                <div class="subtitle">Sistema de Informacion Geografica</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <script>
+        var map = L.map('map').setView([-17.3895, -66.1568], 15);
+
+        var mapaCalles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        var mapaSatelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+            attribution: '&copy; Esri, Maxar, Earthstar Geographics'
+        });
+
+        var mapaTerreno = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            maxZoom: 17,
+            attribution: 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap'
+        });
+
+        var capasMapa = {};
+        var promesas = [];
+
+        function getNombreCorto(nombreArchivo) {
+            var nombre = nombreArchivo.toUpperCase();
+            if (nombre.includes("PREDIOS")) return "PREDIOS";
+            if (nombre.includes("CONSTRUCCION")) return "CONSTRUCCIONES";
+            if (nombre.includes("PERIMETRO")) return "PERIMETRO";
+            if (nombre.includes("MANZANO") || nombre.includes("MANZANA")) return "MANZANOS";
+            if (nombre.includes("LOTES")) return "LOTES";
+            if (nombre.includes("CALLE") || nombre.includes("VIA") || nombre.includes("VIAS")) return "CALLES";
+            if (nombre.includes("FRANJA")) return "FRANJA DE SEGURIDAD";
+            if (nombre.includes("RADIO")) return "RADIO";
+            return nombreArchivo.replace(".geojson", "").replace(/_/g, " ");
+        }
+
+        var estilosManuales = {
+            "PREDIOS": { color: "yellow", weight: 2, fillOpacity: 0 },
+            "CONSTRUCCIONES": { color: "pink", weight: 1, fillOpacity: 0.6 },
+            "PERIMETRO": { color: "red", weight: 3, fillOpacity: 0 },
+            "MANZANOS": { color: "black", weight: 2, dashArray: '5, 5', fillOpacity: 0 },
+            "LOTES": { color: "blue", weight: 1, fillOpacity: 0.1 },
+            "CALLES": { color: "darkblue", weight: 3, fillOpacity: 0 },
+            "FRANJA DE SEGURIDAD": { color: "orange", weight: 1, fillOpacity: 0.3 },
+            "RADIO": { color: "purple", weight: 1, fillOpacity: 0.1 }
+        };
+
+        var nombresAmigables = {
+            "PREDIOS": "Predios",
+            "CONSTRUCCIONES": "Construcciones",
+            "PERIMETRO": "Per赤metro",
+            "MANZANOS": "Manzanas",
+            "LOTES": "Lotes",
+            "CALLES": "Calles",
+            "FRANJA DE SEGURIDAD": "Franja de Seguridad",
+            "RADIO": "Radio"
+        };
+
+        fetch("listar.php")
+            .then(response => response.json())
+            .then(listaArchivos => {
+                if (listaArchivos.length === 0) {
+                    alert("No hay capas disponibles en el servidor.");
+                    return;
+                }
+
+                listaArchivos.forEach(function(nombreArchivo) {
+                    var nombreCorto = getNombreCorto(nombreArchivo);
+                    var nombreLimpio = nombresAmigables[nombreCorto] || nombreCorto;
+                    
+                    var url = "datos/mapa/" + nombreArchivo;
+                    
+                    var estilo = estilosManuales[nombreCorto] || { color: "#4363d8", weight: 2, fillOpacity: 0.15 };
+
+                    var promesa = fetch(url)
+                        .then(response => {
+                            if (!response.ok) throw new Error("No carg車 " + nombreLimpio);
+                            return response.json();
+                        })
+                        .then(data => {
+                            var grupo = L.layerGroup();
+                            
+                            L.geoJSON(data, {
+                                style: estilo,
+                                onEachFeature: function (feature, layer) {
+                                    var props = feature.properties || {};
+                                    var html = '<div class="popup-header">' + nombreLimpio + '</div>';
+                                    html += '<table class="tabla-datos">';
+                                    Object.keys(props).forEach(function(clave) {
+                                        if (clave.startsWith("Shape") || clave === "OBJECTID") return;
+                                        
+                                        var valor = props[clave];
+                                        if (typeof valor === 'number') {
+                                            valor = valor.toFixed(2);
+                                        }
+                                        if (valor === null || valor === undefined) valor = "Sin datos";
+                                        
+                                        var nombreCampo = clave.replace(/_/g, " ");
+                                        
+                                        html += '<tr>';
+                                        html += '<td>' + nombreCampo + '</td>';
+                                        html += '<td>' + valor + '</td>';
+                                        html += '</tr>';
+                                    });
+                                    html += '</table>';
+                                    
+                                    layer.bindPopup(html, { maxWidth: 300 });
+                                }
+                            }).addTo(grupo);
+                            
+                            grupo.addTo(map);
+                            
+                            capasMapa[nombreLimpio] = grupo;
+                            return grupo;
+                        })
+                        .catch(error => {
+                            console.warn("No se encontr車 la capa:", nombreLimpio, error);
+                            return L.layerGroup();
+                        });
+                        
+                    promesas.push(promesa);
+                });
+
+                Promise.all(promesas).then(function() {
+                    L.control.layers(
+                        { 
+                            "Vista de Calles": mapaCalles, 
+                            "Vista Satelital": mapaSatelite, 
+                            "Vista de Relieve": mapaTerreno 
+                        }, 
+                        capasMapa, 
+                        { position: 'topright' }
+                    ).addTo(map);
+                    
+                    var grupos = Object.values(capasMapa);
+                    var bounds = L.latLngBounds([]);
+                    grupos.forEach(function(g) {
+                        g.eachLayer(function(layer) {
+                            bounds.extend(layer.getBounds());
+                        });
+                    });
+                    
+                    if (bounds.isValid()) {
+                        map.fitBounds(bounds, { padding: [20, 20] });
+                    }
+                });
+            })
+            .catch(error => {
+                console.error("Error al cargar la lista de capas:", error);
+                alert("No se pudo obtener la lista de capas del servidor.");
+            });
+    </script>
+</body>
+</html>
