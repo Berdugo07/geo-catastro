@@ -2,6 +2,7 @@
 using ArcGIS.Core.Data;
 using ArcGIS.Core.Geometry;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Mapping;
 using SistemaCatastralAddinGSI.Data;
 using SistemaCatastralAddinGSI.Dockpanes;
@@ -15,6 +16,7 @@ namespace SistemaCatastralAddinGSI.Tools
 {
     internal class SelectPredioTool : MapTool
     {
+        // Relleno temporal: no representa que el predio este registrado.
         private static IDisposable _resaltadoActual;
 
         public SelectPredioTool()
@@ -34,24 +36,52 @@ namespace SistemaCatastralAddinGSI.Tools
             PredioInfo predio = null;
             string aviso = null;
 
+            CapaPrediosAsignada configuracion;
+            try
+            {
+                configuracion = CapaPrediosConfig.Obtener(
+                    Project.Current?.URI, vista.Map.URI);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "No se pudo leer la capa principal: " + ex.Message,
+                    "Catastro");
+                return false;
+            }
+
+            if (configuracion == null)
+            {
+                MessageBox.Show(
+                    "No hay una capa principal configurada para este mapa.\n\n" +
+                    "1. Selecciona la capa de predios en Contents.\n" +
+                    "2. Haz clic en 'Catastro > Configurar capa'.\n" +
+                    "3. Vuelve a usar 'Seleccionar Predio'.",
+                    "Catastro - Configurar capa");
+                return false;
+            }
+
             try
             {
                 await QueuedTask.Run(() =>
                 {
- 
-                    var capas = vista.GetSelectedLayers()
+                    // Buscar la capa exacta que el usuario configuro
+                    // mediante su URI, NUNCA por nombre u ObjectID.
+                    var capa = vista.Map.GetLayersAsFlattenedList()
                         .OfType<FeatureLayer>()
-                        .Where(c => c.ShapeType == esriGeometryType.esriGeometryPolygon)
-                        .ToList();
+                        .FirstOrDefault(c => string.Equals(
+                            c.URI, configuracion.CapaUri,
+                            StringComparison.OrdinalIgnoreCase));
 
-                    if (capas.Count != 1)
+                    if (capa == null ||
+                        capa.ShapeType != esriGeometryType.esriGeometryPolygon)
                     {
-                        aviso = "Seleccione UNA sola capa de polígonos de predios " +
-                                "en el panel Contents y vuelva a hacer clic en el mapa.";
+                        aviso = "La capa principal configurada ya no existe " +
+                                "en este mapa o dejo de ser de poligonos. " +
+                                "Selecciona la capa correcta en Contents y " +
+                                "usa 'Configurar capa' nuevamente.";
                         return;
                     }
-
-                    var capa = capas[0];
                     if (!capa.IsVisible)
                     {
                         aviso = "La capa seleccionada no está visible. " +
@@ -109,6 +139,8 @@ namespace SistemaCatastralAddinGSI.Tools
                                     predio.Superficie = superficie;
                             }
 
+                            // Evitar elegir arbitrariamente un predio
+                            // si dos poligonos de esta capa se superponen.
                             if (cursor.MoveNext())
                             {
                                 predio = null;
@@ -126,6 +158,7 @@ namespace SistemaCatastralAddinGSI.Tools
                         return;
                     }
 
+                    // Selección nativa de ArcGIS: se usa OID solo temporalmente.
                     vista.Map.ClearSelection();
                     using (var seleccion = capa.Select(
                         new QueryFilter { ObjectIDs = new List<long> { oid } },
@@ -133,6 +166,8 @@ namespace SistemaCatastralAddinGSI.Tools
                     {
                     }
 
+                    // Overlay encima del mapa para garantizar un relleno visible,
+                    // incluso cuando hay otras capas dibujadas encima.
                     _resaltadoActual?.Dispose();
                     var contorno = SymbolFactory.Instance.ConstructStroke(
                         CIMColor.CreateRGBColor(0, 105, 210, 100),
