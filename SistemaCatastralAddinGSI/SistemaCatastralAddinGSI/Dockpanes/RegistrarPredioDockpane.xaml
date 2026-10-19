@@ -1,0 +1,853 @@
+<UserControl x:Class="SistemaCatastralAddinGSI.Dockpanes.RegistrarPredioDockpaneView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             MinWidth="330"
+             d:DesignHeight="850"
+             d:DesignWidth="700">
+
+    <UserControl.Resources>
+
+        <!-- ============================= -->
+        <!-- ESTILO DE ETIQUETAS -->
+        <!-- ============================= -->
+        <Style TargetType="TextBlock" x:Key="LabelStyle">
+            <Setter Property="Margin" Value="0,5,0,3"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+
+        <!-- ============================= -->
+        <!-- ESTILO CAMPOS DE TEXTO -->
+        <!-- ============================= -->
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="0,0,0,7"/>
+            <Setter Property="Padding" Value="7,5"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!-- ============================= -->
+        <!-- ESTILO COMBOBOX -->
+        <!-- ============================= -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Margin" Value="0,0,0,7"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!-- ============================= -->
+        <!-- ESTILO DATEPICKER -->
+        <!-- ============================= -->
+        <Style TargetType="DatePicker">
+            <Setter Property="Margin" Value="0,0,0,7"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="MinHeight" Value="30"/>
+        </Style>
+
+        <!-- ============================= -->
+        <!-- ESTILO GROUPBOX -->
+        <!-- ============================= -->
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="0,6,0,6"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <!-- ============================= -->
+        <!-- ESTILO BOTONES -->
+        <!-- ============================= -->
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="11"/>
+        </Style>
+
+    </UserControl.Resources>
+
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+
+        <!-- ===================================================== -->
+        <!-- ENCABEZADO -->
+        <!-- ===================================================== -->
+
+        <Border Grid.Row="0"
+                Background="#0079C1"
+                Padding="10">
+
+            <TextBlock Text="FORMULARIO ÚNICO DE REGISTRO CATASTRAL"
+                       Foreground="White"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       HorizontalAlignment="Center"
+                       TextWrapping="Wrap"/>
+
+        </Border>
+
+
+        <!-- ===================================================== -->
+        <!-- CONTENIDO -->
+        <!-- ===================================================== -->
+
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Padding="10">
+
+            <StackPanel>
+
+
+                <!-- ================================================= -->
+                <!-- 1. DATOS DEL PROPIETARIO -->
+                <!-- ================================================= -->
+
+                <GroupBox x:Name="gbPropietarios" Header="1. Datos del Propietario">
+
+                    <StackPanel>
+
+                        <TextBlock Text="Apellido Paterno:"
+                                   Style="{StaticResource LabelStyle}"/>
+                        <TextBox x:Name="txtApellidoPaterno"/>
+
+
+                        <TextBlock Text="Apellido Materno:"
+                                   Style="{StaticResource LabelStyle}"/>
+                        <TextBox x:Name="txtApellidoMaterno"/>
+
+
+                        <TextBlock Text="Nombres:"
+                                   Style="{StaticResource LabelStyle}"/>
+                        <TextBox x:Name="txtNombres"/>
+
+
+                        <Grid Margin="0,2,0,0">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+
+                            <StackPanel Grid.Column="0"
+                                        Margin="0,0,6,0">
+
+                                <TextBlock Text="Tipo de Documento:"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <ComboBox x:Name="cmbTipoDocumento">
+
+                                    <ComboBoxItem Content="CI"/>
+                                    <ComboBoxItem Content="Pasaporte"/>
+                                    <ComboBoxItem Content="NIT"/>
+                                    <ComboBoxItem Content="Otro"/>
+
+                                </ComboBox>
+
+                            </StackPanel>
+
+
+                            <StackPanel Grid.Column="1"
+                                        Margin="6,0,0,0">
+
+                                <TextBlock Text="Porcentaje de Propiedad:"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtPorcentaje"/>
+
+                            </StackPanel>
+
+                        </Grid>
+
+
+                        <TextBlock Text="N° de Documento:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <TextBox x:Name="txtDocumento"/>
+
+
+                        <TextBlock Text="Copropietarios adicionales" FontWeight="SemiBold" Margin="0,10,0,6"/>
+                        <TextBox x:Name="txtOtroNombre" ToolTip="Nombre completo" />
+                        <TextBox x:Name="txtOtroDocumento" ToolTip="Número de documento" />
+                        <TextBox x:Name="txtOtroPorcentaje" ToolTip="Porcentaje de propiedad" />
+                        <ListBox x:Name="lstOtrosPropietarios" Height="90" DisplayMemberPath="Resumen" Margin="0,4,0,6"/>
+                        <Button Content="Quitar copropietario seleccionado"
+                                Margin="0,0,0,8" Padding="8,5" Click="btnQuitarPropietario_Click"/>
+                        <Button x:Name="btnAgregarPropietario"
+                                Content="➕ Agregar Propietario"
+                                HorizontalAlignment="Right"
+                                Margin="0,6,0,0"
+                                Padding="12,6"
+                                Click="btnAgregarPropietario_Click"/>
+
+                    </StackPanel>
+
+                </GroupBox>
+
+
+
+                <!-- ================================================= -->
+                <!-- 2. DERECHO PROPIETARIO -->
+                <!-- ================================================= -->
+
+                <GroupBox Header="2. Derecho Propietario">
+
+                    <StackPanel>
+
+                        <TextBlock Text="Notario:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <TextBox x:Name="txtNotario"/>
+
+
+                        <TextBlock Text="Registro:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <TextBox x:Name="txtRegistro"/>
+
+
+                        <Grid Margin="0,2,0,0">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+
+                            <StackPanel Grid.Column="0"
+                                        Margin="0,0,6,0">
+
+                                <TextBlock Text="Fecha de Escritura:"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <DatePicker x:Name="dpFechaEscritura"/>
+
+                            </StackPanel>
+
+
+                            <StackPanel Grid.Column="1"
+                                        Margin="6,0,0,0">
+
+                                <TextBlock Text="Matrícula:"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtMatricula"/>
+
+                            </StackPanel>
+
+                        </Grid>
+
+
+                        <TextBlock Text="Superficie según Título (m²):"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <TextBox x:Name="txtSuperficieTitulo"/>
+
+                    </StackPanel>
+
+                </GroupBox>
+
+
+
+                <!-- ================================================= -->
+                <!-- 3. CÓDIGO CATASTRAL -->
+                <!-- ================================================= -->
+
+                <GroupBox x:Name="gbPredio" Header="3. Código Catastral">
+
+                    <StackPanel>
+
+                        <TextBlock Text="Código Catastral:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <TextBox x:Name="txtCodigoCatastral"
+                                 FontWeight="Bold"
+                                 FontSize="13"
+                                 ToolTip="Ingrese el código catastral según el documento legal"/>
+
+
+                        <!-- DISTRITO / ZONA -->
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+
+                            <StackPanel Grid.Column="0"
+                                        Margin="0,0,6,0">
+
+                                <TextBlock Text="Distrito:"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtDistrito"/>
+
+                            </StackPanel>
+
+
+                            <StackPanel Grid.Column="1"
+                                        Margin="6,0,0,0">
+
+                                <TextBlock Text="Zona:"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtZona"/>
+
+                            </StackPanel>
+
+                        </Grid>
+
+
+                        <!-- MANZANA / PREDIO -->
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+
+                            <StackPanel Grid.Column="0"
+                                        Margin="0,0,6,0">
+
+                                <TextBlock Text="Manzana:"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtManzana"/>
+
+                            </StackPanel>
+
+
+                            <StackPanel Grid.Column="1"
+                                        Margin="6,0,0,0">
+
+                                <TextBlock Text="Predio:"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtPredio"/>
+
+                            </StackPanel>
+
+                        </Grid>
+
+
+                        <TextBlock Text="Calle o Avenida:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <TextBox x:Name="txtCalle"/>
+
+
+                        <TextBlock Text="Dirección / Barrio:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <TextBox x:Name="txtDireccion"/>
+
+                    </StackPanel>
+
+                </GroupBox>
+
+
+
+                <!-- ================================================= -->
+                <!-- 4. TIPOLOGÍA -->
+                <!-- ================================================= -->
+
+                <GroupBox Header="4. Tipología">
+
+                    <StackPanel>
+
+
+                        <TextBlock Text="Destino de Uso:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <ComboBox x:Name="cmbDestinoUso">
+
+                            <ComboBoxItem Content="VIVIENDA"/>
+                            <ComboBoxItem Content="COMERCIO"/>
+                            <ComboBoxItem Content="INDUSTRIA"/>
+                            <ComboBoxItem Content="SERVICIOS"/>
+                            <ComboBoxItem Content="MIXTO"/>
+
+                        </ComboBox>
+
+
+                        <TextBlock Text="Tipología:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <ComboBox x:Name="cmbTipologia">
+
+                            <ComboBoxItem Content="A"/>
+                            <ComboBoxItem Content="B"/>
+                            <ComboBoxItem Content="C"/>
+                            <ComboBoxItem Content="D"/>
+
+                        </ComboBox>
+
+
+                        <TextBlock Text="Estado Físico:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <ComboBox x:Name="cmbEstadoFisico">
+
+                            <ComboBoxItem Content="BUENO"/>
+                            <ComboBoxItem Content="REGULAR"/>
+                            <ComboBoxItem Content="MALO"/>
+
+                        </ComboBox>
+
+
+                        <TextBlock Text="Planta:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <TextBox x:Name="txtPlanta"/>
+
+
+                        <!-- SUPERFICIES -->
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+
+                            <StackPanel Grid.Column="0"
+                                        Margin="0,0,6,0">
+
+                                <TextBlock Text="Superficie Construida:"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtSupConstruida"/>
+
+                            </StackPanel>
+
+
+                            <StackPanel Grid.Column="1"
+                                        Margin="6,0,0,0">
+
+                                <TextBlock Text="Año de Construcción:"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtAnioConstruccion"/>
+
+                            </StackPanel>
+
+                        </Grid>
+
+
+                        <TextBlock Text="Superficie Total:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <TextBox x:Name="txtSupTotal"/>
+
+                    </StackPanel>
+
+                </GroupBox>
+
+
+
+                <!-- ================================================= -->
+                <!-- 5. SERVICIOS Y CARACTERÍSTICAS -->
+                <!-- ================================================= -->
+
+                <GroupBox Header="5. Servicios y Características del Terreno">
+
+                    <StackPanel>
+
+
+                        <!-- AGUA -->
+
+                        <Grid Margin="0,3,0,3">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="Agua Corriente:"
+                                       Style="{StaticResource LabelStyle}"/>
+
+                            <RadioButton Grid.Column="1"
+                                         Content="Sí"
+                                         x:Name="rbAguaSi"
+                                         GroupName="Agua"
+                                         Margin="8,0"/>
+
+                            <RadioButton Grid.Column="2"
+                                         Content="No"
+                                         x:Name="rbAguaNo"/>
+
+                        </Grid>
+
+
+                        <!-- ENERGÍA -->
+
+                        <Grid Margin="0,3,0,3">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="Energía Eléctrica:"
+                                       Style="{StaticResource LabelStyle}"/>
+
+                            <RadioButton Grid.Column="1"
+                                         Content="Sí"
+                                         x:Name="rbEnergiaSi"
+                                         GroupName="Energia"
+                                         Margin="8,0"/>
+
+                            <RadioButton Grid.Column="2"
+                                         Content="No"
+                                         x:Name="rbEnergiaNo"/>
+
+                        </Grid>
+
+
+                        <!-- ALUMBRADO -->
+
+                        <Grid Margin="0,3,0,3">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="Alumbrado Público:"
+                                       Style="{StaticResource LabelStyle}"/>
+
+                            <RadioButton Grid.Column="1"
+                                         Content="Sí"
+                                         x:Name="rbAlumbradoSi"
+                                         GroupName="Alumbrado"
+                                         Margin="8,0"/>
+
+                            <RadioButton Grid.Column="2"
+                                         Content="No"
+                                         x:Name="rbAlumbradoNo"/>
+
+                        </Grid>
+
+
+                        <!-- TELÉFONO -->
+
+                        <Grid Margin="0,3,0,6">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="Teléfono:"
+                                       Style="{StaticResource LabelStyle}"/>
+
+                            <RadioButton Grid.Column="1"
+                                         Content="Sí"
+                                         x:Name="rbTelefonoSi"
+                                         GroupName="Telefono"
+                                         Margin="8,0"/>
+
+                            <RadioButton Grid.Column="2"
+                                         Content="No"
+                                         x:Name="rbTelefonoNo"/>
+
+                        </Grid>
+
+
+
+                        <!-- MATERIAL VÍA -->
+
+                        <TextBlock Text="Material de Vía:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <ComboBox x:Name="cmbMaterialVia">
+
+                            <ComboBoxItem Content="ASFALTO"/>
+                            <ComboBoxItem Content="TIERRA"/>
+                            <ComboBoxItem Content="CEMENTO"/>
+                            <ComboBoxItem Content="ADOQUIN"/>
+
+                        </ComboBox>
+
+
+                        <!-- PENDIENTE -->
+
+                        <TextBlock Text="Pendiente:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <ComboBox x:Name="cmbPendiente">
+
+                            <ComboBoxItem Content="PLANA"/>
+                            <ComboBoxItem Content="LEVE"/>
+                            <ComboBoxItem Content="PRONUNCIADA"/>
+
+                        </ComboBox>
+
+
+                        <!-- FORMA -->
+
+                        <TextBlock Text="Forma:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <ComboBox x:Name="cmbForma">
+
+                            <ComboBoxItem Content="REGULAR"/>
+                            <ComboBoxItem Content="IRREGULAR"/>
+
+                        </ComboBox>
+
+
+                        <!-- FRENTE / FONDO -->
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+
+                            <StackPanel Grid.Column="0"
+                                        Margin="0,0,6,0">
+
+                                <TextBlock Text="Frente (m):"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtFrente"/>
+
+                            </StackPanel>
+
+
+                            <StackPanel Grid.Column="1"
+                                        Margin="6,0,0,0">
+
+                                <TextBlock Text="Fondo (m):"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtFondo"/>
+
+                            </StackPanel>
+
+                        </Grid>
+
+                    </StackPanel>
+
+                </GroupBox>
+
+
+
+                <!-- ================================================= -->
+                <!-- 6. SUPERFICIES DEL TERRENO -->
+                <!-- ================================================= -->
+
+                <GroupBox Header="6. Superficies del Terreno">
+
+                    <StackPanel>
+
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+
+                            <StackPanel Grid.Column="0"
+                                        Margin="0,0,6,0">
+
+                                <TextBlock Text="Superficie según Mensura (m²):"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtSupMensura"/>
+
+                            </StackPanel>
+
+
+                            <StackPanel Grid.Column="1"
+                                        Margin="6,0,0,0">
+
+                                <TextBlock Text="Superficie según Escritura (m²):"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtSupEscritura"/>
+
+                            </StackPanel>
+
+                        </Grid>
+
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+
+                            <StackPanel Grid.Column="0"
+                                        Margin="0,0,6,0">
+
+                                <TextBlock Text="Área Excedente (m²):"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtAreaExcedente"/>
+
+                            </StackPanel>
+
+
+                            <StackPanel Grid.Column="1"
+                                        Margin="6,0,0,0">
+
+                                <TextBlock Text="Área Afectada (m²):"
+                                           Style="{StaticResource LabelStyle}"/>
+
+                                <TextBox x:Name="txtAreaAfectada"/>
+
+                            </StackPanel>
+
+                        </Grid>
+
+
+                        <TextBlock Text="Superficie Útil (m²):"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <TextBox x:Name="txtSuperficieUtil"/>
+
+                    </StackPanel>
+
+                </GroupBox>
+
+
+
+                <!-- ================================================= -->
+                <!-- 7. ADJUNTOS -->
+                <!-- ================================================= -->
+
+                <GroupBox Header="7. Adjuntos">
+
+                    <StackPanel>
+
+                        <TextBlock Text="Fotografía del Inmueble:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <Button x:Name="btnCargarFoto"
+                                Content="📷 Cargar Fotografía"
+                                HorizontalAlignment="Stretch"
+                                Margin="0,0,0,8"
+                                Padding="10,7"
+                                Click="btnCargarFoto_Click"/>
+
+
+                        <TextBlock Text="Documentación:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <Button x:Name="btnCargarDocumento"
+                                Content="📎 Cargar Documentos"
+                                HorizontalAlignment="Stretch"
+                                Margin="0,0,0,2"
+                                Padding="10,7"
+                                Click="btnCargarDocumento_Click"/>
+
+                    </StackPanel>
+
+                </GroupBox>
+
+
+
+                <!-- ================================================= -->
+                <!-- 8. OBSERVACIONES -->
+                <!-- ================================================= -->
+
+                <GroupBox x:Name="gbColindantes" Header="8. Colindancias">
+                    <StackPanel>
+                        <TextBlock Text="Norte"/><TextBox x:Name="txtColindanteNorte"/>
+                        <TextBlock Text="Sur"/><TextBox x:Name="txtColindanteSur"/>
+                        <TextBlock Text="Este"/><TextBox x:Name="txtColindanteEste"/>
+                        <TextBlock Text="Oeste"/><TextBox x:Name="txtColindanteOeste"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="9. Observaciones">
+
+                    <StackPanel>
+
+                        <TextBlock Text="Observaciones:"
+                                   Style="{StaticResource LabelStyle}"/>
+
+                        <TextBox x:Name="txtObservaciones"
+                                 Height="100"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto"/>
+
+                    </StackPanel>
+
+                </GroupBox>
+
+
+            </StackPanel>
+
+        </ScrollViewer>
+
+
+
+        <!-- ===================================================== -->
+        <!-- BOTONES INFERIORES -->
+        <!-- ===================================================== -->
+
+        <Border Grid.Row="2"
+                Background="#F0F0F0"
+                Padding="10"
+                BorderBrush="#CCCCCC"
+                BorderThickness="0,1,0,0">
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+
+
+                <Button x:Name="btnGuardar"
+                        Content="💾 GUARDAR"
+                        Width="120"
+                        Height="34"
+                        Margin="0,0,10,0"
+                        FontWeight="Bold"
+                        Click="btnGuardar_Click"/>
+
+
+                <Button x:Name="btnSalir"
+                        Content="SALIR"
+                        Width="90"
+                        Height="34"
+                        Click="btnSalir_Click"/>
+
+            </StackPanel>
+
+        </Border>
+
+    </Grid>
+
+</UserControl>

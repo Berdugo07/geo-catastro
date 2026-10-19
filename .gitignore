@@ -1,0 +1,30 @@
+
+# Archivos temporales de Visual Studio
+.vs/
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+**/ProjectEvaluation/
+
+# Archivos locales de usuario
+*.csproj.user
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Archivos temporales
+*.tmp
+*.cache
+*.log
+
+# Copias comprimidas redundantes
+*.rar
+*.zip
+
+# Datos sensibles
+.env
+.env.*
+*.pfx
+*.p12

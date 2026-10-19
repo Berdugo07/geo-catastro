@@ -1,0 +1,17 @@
+<UserControl x:Class="SistemaCatastralAddinGSI.Dockpanes.InformacionPredioDockpaneView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ MinWidth="280">
+ <DockPanel Margin="14">
+  <StackPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+   <Button Content="Editar ficha catastral" Padding="9" Click="Editar_Click"/>
+  </StackPanel>
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+   <StackPanel>
+    <TextBlock Text="Información catastral" FontSize="17" FontWeight="Bold" Margin="0,0,0,12"/>
+    <TextBlock x:Name="txtEstado" FontWeight="Bold" Foreground="#287A50" Margin="0,0,0,10"/>
+    <TextBlock x:Name="txtContenido" TextWrapping="Wrap" FontSize="13" LineHeight="23"/>
+   </StackPanel>
+  </ScrollViewer>
+ </DockPanel>
+</UserControl>

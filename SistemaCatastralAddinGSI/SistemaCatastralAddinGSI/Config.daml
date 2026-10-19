@@ -1,0 +1,109 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<ArcGIS xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" defaultAssembly="SistemaCatastralAddinGSI.dll" defaultNamespace="SistemaCatastralAddinGSI" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+	<AddInInfo id="{19203922-194d-4662-a3d0-7347cfdf3087}" version="1.0" desktopVersion="3.5.57366" product="ArcGISPro">
+		<Name>Sistema Catastral GSI</Name>
+		<Description>Sistema de Registro y Gestión Catastral</Description>
+		<Image>Images/AddInDesktop32.png</Image>
+		<Author>GSI</Author>
+		<Company>Geospatial Industry</Company>
+		<Date>23/09/2026</Date>
+		<Subject>Framework</Subject>
+	</AddInInfo>
+	<modules>
+		<insertModule id="SistemaCatastralAddinGSI_Module" className="Module1" autoLoad="false" caption="Módulo Catastro">
+			<tabs>
+				<tab id="CatastroTab" caption="Catastro" keytip="G">
+					<group refID="RegistroGroup" />
+					<group refID="EdicionGroup" />
+					<group refID="InformacionGroup" />
+					<group refID="ReportesGroup" />
+				</tab>
+			</tabs>
+			<groups>
+				<group id="RegistroGroup" caption="Registro Catastral">
+					<button refID="BtnSeleccionarPredio" size="large" />
+					<button refID="BtnRegistrarPredio" size="large" />
+					<button refID="BtnBuscarCatastral" size="large" />
+				</group>
+				<group id="EdicionGroup" caption="Edición">
+					<button refID="BtnEditarPredio" size="large" />
+					<button refID="BtnEditarColindantes" size="large" />
+					<button refID="BtnEditarPropietarios" size="large" />
+				</group>
+				<group id="InformacionGroup" caption="Información">
+					<button refID="BtnIdentificar" size="large" />
+					<button refID="BtnActualizarMapa" size="large" />
+				</group>
+				<group id="ReportesGroup" caption="Reportes">
+					<button refID="BtnGenerarPDF" size="large" />
+					<button refID="BtnCertificados" size="large" />
+				</group>
+			</groups>
+			<controls>
+				<button id="BtnSeleccionarPredio" caption="Seleccionar Predio" className="BuscarPredioButton" loadOnClick="true" smallImage="Images/Buscar16.png" largeImage="Images/Buscar32.png">
+					<tooltip heading="Seleccionar Predio">
+						Haz clic sobre un predio en el mapa para seleccionarlo.
+					</tooltip>
+				</button>
+				<tool id="SistemaCatastralAddinGSI_SelectPredioTool" caption="Seleccionar Predio" className="SistemaCatastralAddinGSI.Tools.SelectPredioTool" loadOnClick="true" condition="esri_mapping_mapPane" smallImage="Images/Buscar16.png" largeImage="Images/Buscar32.png">
+					<tooltip heading="Seleccionar Predio">
+						Haz clic dentro de un predio para seleccionarlo.
+					</tooltip>
+				</tool>
+				<tool id="SistemaCatastralAddinGSI_IdentificarPredioTool" caption="Identificar Predio" className="SistemaCatastralAddinGSI.Tools.IdentificarPredioTool" loadOnClick="true" condition="esri_mapping_mapPane" smallImage="Images/Identificar16.png" largeImage="Images/Identificar32.png">
+					<tooltip heading="Identificar Predio">
+						Haz clic sobre un predio para abrir su ficha catastral.
+					</tooltip>
+				</tool>
+				<button id="BtnRegistrarPredio" caption="Registrar Predio" className="RegistrarPredioButton" loadOnClick="true" smallImage="Images/Registrar16.png" largeImage="Images/Registrar32.png">
+					<tooltip heading="Registrar Predio">
+						Abre el formulario del predio seleccionado.
+					</tooltip>
+				</button>
+				<button id="BtnEditarPredio" caption="Editar Predio" className="EditarPredioButton" loadOnClick="true" smallImage="Images/Editar16.png" largeImage="Images/Editar32.png">
+					<tooltip heading="Editar Predio">
+						Edita los datos.
+					</tooltip>
+				</button>
+				<button id="BtnEditarColindantes" caption="Colindantes" className="EditarColindantesButton" loadOnClick="true" smallImage="Images/Colindantes16.png" largeImage="Images/Colindantes32.png">
+					<tooltip heading="Editar Colindantes">
+						Colindantes.
+					</tooltip>
+				</button>
+				<button id="BtnEditarPropietarios" caption="Propietarios" className="EditarPropietariosButton" loadOnClick="true" smallImage="Images/Propietarios16.png" largeImage="Images/Propietarios32.png">
+					<tooltip heading="Editar Propietarios">
+						Propietarios.
+					</tooltip>
+				</button>
+				<button id="BtnIdentificar" caption="Identificar" className="IdentificarButton" loadOnClick="true" smallImage="Images/Identificar16.png" largeImage="Images/Identificar32.png">
+					<tooltip heading="Identificar Predio">
+						Información.
+					</tooltip>
+				</button>
+				<button id="BtnGenerarPDF" caption="Generar PDF" className="GenerarPDFButton" loadOnClick="true" smallImage="Images/PDF16.png" largeImage="Images/PDF32.png">
+					<tooltip heading="Generar PDF">
+						PDF.
+					</tooltip>
+				</button>
+				<button id="BtnCertificados" caption="Certificados" className="CertificadosButton" loadOnClick="true" smallImage="Images/Certificado16.png" largeImage="Images/Certificado32.png">
+					<tooltip heading="Certificados">
+						Certificados.
+					</tooltip>
+				</button>
+				<button id="BtnBuscarCatastral" caption="Buscar" className="BuscarCatastralButton" loadOnClick="true" smallImage="Images/Buscar16.png" largeImage="Images/Buscar32.png" />
+				<button id="BtnActualizarMapa" caption="Actualizar mapa" className="ActualizarMapaButton" loadOnClick="true" smallImage="Images/Identificar16.png" largeImage="Images/Identificar32.png" />
+			</controls>
+			<dockPanes>
+				<dockPane id="SistemaCatastralAddinGSI_RegistrarPredioDockpane" caption="Formulario de Registro Catastral" className="SistemaCatastralAddinGSI.Dockpanes.RegistrarPredioDockpaneViewModel" dock="right" isVisible="false" width="420">
+					<content className="SistemaCatastralAddinGSI.Dockpanes.RegistrarPredioDockpaneView" />
+				</dockPane>
+				<dockPane id="SistemaCatastralAddinGSI_InformacionPredioDockpane" caption="Información Catastral" className="SistemaCatastralAddinGSI.Dockpanes.InformacionPredioDockpaneViewModel" dock="right" width="360" isVisible="false">
+					<content className="SistemaCatastralAddinGSI.Dockpanes.InformacionPredioDockpaneView" />
+				</dockPane>
+				<dockPane id="SistemaCatastralAddinGSI_BuscarPredioDockpane" caption="Buscar Predio" className="SistemaCatastralAddinGSI.Dockpanes.BuscarPredioDockpaneViewModel" dock="right" width="360" isVisible="false">
+					<content className="SistemaCatastralAddinGSI.Dockpanes.BuscarPredioDockpaneView" />
+				</dockPane>
+			</dockPanes>
+		</insertModule>
+	</modules>
+</ArcGIS>

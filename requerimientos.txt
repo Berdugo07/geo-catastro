@@ -1,0 +1,102 @@
+los siguientes puntos:
+-necesitamos una build donde en aqui estara en una nueva seccion en arcgis pro que tiene que llaamrse catastro despues de eso 
+donde en aqui tendra erramientas podriamos reutilizar seleccion,buscar necsito sugerencia bueno primero esque matizar por que se tiene
+hacer las siguientes acciones donde hay una opcion que es al hacer click en el predio digamos en una de las diviciones donde sale una ventana de formulario unico
+de registro catastral en la foto se ve cuando se guarda este predio se tinta de otro color y envima se ve una etiqueta con un codigo catastral que se registro y de otro color para diferenciarlos.
+depsues cuando se hace click en esa vez pusieron identificar donde en la parte del costa se abre la informacion de ese que ya esta registrado toda la informacion
+cuando se hace click deberia verse el relleno de ese predio de otro color donde la ventana se dockable o se abra a un costado ya que que sea lfotante cualquiera puede molestar a quien esta usando
+esta donde cuando se hace click la ventana de informacion no se cierra se va actializando cuando se hace click en cada predio y actializando en tiempo real donde tambien un buscador con los datos que se tengan 
+cuando busque deberia mostar y llevarnos en dode esta ese predio o lote ,tambien editar , otro editar colindantes norte,sud,este,oeste , despues otra seccion reportes donde tenemos registro unico hacien click o seleccionando algun predio al hacer
+click deberia saltar un pdf por el donde el formulario de registro unico catastral despues otra seccion de certificados en este todavia lo dejaremos vacio despues en editar tambien propietarios  y lo otro immportante como 
+ya sabes tenemos ya la herramienta de subir a la nube lo que neceistamos ya se puede subir los predios pero necesitamos todas estas informacion sobre todo del propietario las cosas mas importantes igual se suban y en ahi en la web tenga un buscador cuando el contribuyente entre
+ala pagina busqye por su codigo catastral que es unico le salte justo donde este y este sus datos en aqui tambien cuando haga click deberia salir su informacion registrada y tambien una seccion donde pagar impuestos bueno solo crea esa seccion que despues veremos como 
+lo manejamos eso en una siguiente etapa
+
+Exactamente. GeoCatastro GSI debe diseñarse como un producto comercial configurable, no como una herramienta desarrollada exclusivamente para el municipio de Arbieto.
+
+Eso cambia una decisión importante de la versión beta: vamos a eliminar la dependencia de nombres como `PREDIOS`, rutas específicas de Windows y estructuras preexistentes de una determinada geodatabase.
+
+## 1. ¿Qué nos enseñó tu diagnóstico?
+
+El diagnóstico que ejecutaste se completó correctamente y encontró 29 capas de entidades en tu mapa, incluidas cinco candidatas a representar predios o parcelas.
+
+Entre ellas aparecen:
+
+- `Catastro_Mpio_Arbieto_Predios_d5`, dentro de `individuales.gdb`.
+- `Catastro_Mpio_Arbieto_Predios`, dentro de otra geodatabase.
+- `Predios`, almacenada como `PREDIOS_ExportFeatures`.
+- `Parcelas 19`, dentro de `gdb_inra_cbba_2025.gdb`.
+- `LOTES`, dentro de `quilquina1.gdb`.
+
+Además, las capas examinadas no presentan un campo `GlobalID` ni una tabla `CAT_REGISTROS` en sus geodatabases.
+
+Esto confirma que no podemos seleccionar automáticamente una capa por su nombre, porque podría corresponder a otro sector, proyecto o municipio.
+
+## 2. Cómo debe comenzar el sistema comercial
+
+Mi propuesta es que, cuando un cliente instale el complemento y abra un proyecto, encuentre una opción llamada Configurar Catastro.
+
+GeoCatastro GSI — Configuración
+
+Propuesta
+
+Ejemplo de la configuración inicial que queremos incorporar al complemento.
+
+Nombre del proyecto catastral
+
+Capa de lotes o prediosCatastro_Mpio_Arbieto_Predios_d5
+
+En la versión funcional, las opciones se obtendrán del mapa abierto y no estarán escritas en el código.
+
+Dónde almacenar el catastro
+
+Crear una geodatabase de trabajo independiente (recomendado)
+
+Preparar una geodatabase existente con autorización
+
+Configuración sujeta a validación y copia de seguridad antes de escribir datos.
+
+Usar esta configuración como ejemplo de desarrollo&#x20;
+
+La diferencia es que cualquier usuario podrá seleccionar sus propios predios, aunque se llamen `LOTES_2027`, `URBANIZACION_SUR`, `PARCELARIO` o cualquier otro nombre.
+
+## 3. Preparé una primera versión configurable
+
+GeoCatastro GSI — Configurador Universal Beta
+
+Herramienta ArcGIS Pro + complemento Visual Studio modificado + guía de pruebas
+
+&#x20;Descargar proyecto ZIP
+
+Esta versión de código incorpora:
+
+- Una caja de herramientas `.pyt` que permite seleccionar una capa poligonal sin importar su nombre.
+- Diagnóstico de la capa antes de realizar cambios.
+- Creación opcional de una geodatabase operativa nueva, sin modificar la fuente original.
+- Asignación configurable de campos de manzana, lote, superficie y zona.
+- Creación de `GSI_PREDIOS`, `CAT_REGISTROS` y `GSI_CONFIG`.
+- Un botón Configurar Catastro en el código del complemento para escoger la capa correspondiente a cada mapa.
+
+La herramienta Python pasó las comprobaciones de sintaxis y se revisó la estructura del proyecto. La ejecución en ArcGIS Pro y la compilación C# siguen pendientes de prueba en Windows.
+
+## 4. Cómo lo probaremos, parte por parte
+
+Primero solo vamos a comprobar que el configurador pueda reconocer una capa arbitraria.
+
+1. Extrae el ZIP.
+2. Abre tu proyecto en ArcGIS Pro.
+3. En el panel Catálogo, busca Toolboxes (Cajas de herramientas).
+4. Haz clic derecho → Add Toolbox (Agregar caja de herramientas).
+5. Selecciona el archivo `GeoCatastro_Configurador.pyt`.
+6. Abre Configurar proyecto catastral (beta) y elige una capa, por ejemplo `Catastro_Mpio_Arbieto_Predios_d5`.
+7. En Acción, deja seleccionado Solo diagnosticar (no modificar) y pulsa Run.
+
+Esta vez no tendrás que copiar ningún código a la ventana Python.
+
+## 5. Lo que aún debemos desarrollar para comercializarlo
+
+La beta configurable será nuestra base, pero la versión comercial necesitará guardar la configuración de cada proyecto de manera portable, permitir importar y actualizar cartografía sin perder GlobalIDs, manejar esquemas de campos diferentes, incorporar auditoría de modificaciones y resolver adecuadamente la edición de múltiples usuarios.
+
+También quiero conservar el enfoque que acordamos: primero terminaremos todas las funciones locales de ArcGIS Pro y de la geodatabase. Después trabajaremos con FTP, cPanel y el visor web.
+
+Por ahora, prueba el modo Solo diagnosticar de la nueva herramienta. Así podremos confirmar que reconoce correctamente tus capas sin depender de Arbieto ni modificar ningún dato.
